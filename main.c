@@ -9,16 +9,16 @@ void usage(const char *);
  
 typedef int (*typefunc_t)(bstr_t *, float, float, float, float);
 
-typedef struct boxtype_table_entry {
-	char		*be_typename;
-	typefunc_t	be_typefunc_outdim;
-	typefunc_t	be_typefunc_indim;
-} boxtype_table_entry_t;
+typedef struct boxtype {
+	char		*bt_name;
+	typefunc_t	bt_genfunc_outdim;
+	typefunc_t	bt_genfunc_indim;
+} boxtype_t;
 
 int box_simple_outdim(bstr_t *, float, float, float, float);
 
 
-boxtype_table_entry_t	boxtype_table[] = {
+boxtype_t	boxtype_table[] = {
 	{ "simple",	box_simple_outdim, NULL },
 	{ 0 }
 };
@@ -46,24 +46,26 @@ parse_dims(const char *str, float *width, float *depth, float *height)
 int
 main(int argc, char **argv)
 {
-	char	*execn;
-	int	err;
-	int	ret;
-	int	c;
-	char	*type;
-	bstr_t	*out;
-	char	*indims;
-	char	*outdims;
-	float	width;
-	float	depth;
-	float	height;
-	float	stock;
+	char		*execn;
+	int		err;
+	int		ret;
+	int		c;
+	char		*type;
+	bstr_t		*out;
+	char		*indims;
+	char		*outdims;
+	float		width;
+	float		depth;
+	float		height;
+	float		stock;
+	boxtype_t	*bt;
 
 	err = 0;
 	type = NULL;
 	out = NULL;
 	indims = NULL;
 	outdims = NULL;
+	width = depth = height = stock = 0;
 
         execn = basename(argv[0]);
         if(xstrempty(execn)) {
@@ -106,6 +108,7 @@ main(int argc, char **argv)
 				err = -1;
 				goto end_label;
 			}
+			break;
 
 		case '?':
 			fprintf (stderr, "Unknown option `-%c'\n", optopt);
@@ -157,6 +160,49 @@ main(int argc, char **argv)
 		err = -1;
 		goto end_label;
 	}
+
+	for(bt = boxtype_table; bt->bt_name != NULL; ++bt) {
+		if(!xstrcmp(bt->bt_name, type))
+			break;
+	}
+
+	if(bt == NULL) {
+		fprintf(stderr, "Type not found: %s.\n", type);
+		err = -1;
+		goto end_label;
+	}
+
+	if(outdims != NULL) {
+		if(bt->bt_genfunc_outdim == NULL) {
+			fprintf(stderr, "Type '%s' does not support"
+			    " outside dimensions\n", type);
+			err = -1;
+			goto end_label;
+		}
+		ret = bt->bt_genfunc_outdim(out, width, depth, height, stock);
+		if(ret != 0) {
+			fprintf(stderr, "Error while generating output: %s\n",
+			    strerror(ret));
+			err = -1;
+			goto end_label;
+		}
+	} else {
+		if(bt->bt_genfunc_indim == NULL) {
+			fprintf(stderr, "Type '%s' does not support"
+			    " inside dimensions\n", type);
+			err = -1;
+			goto end_label;
+		}
+		ret = bt->bt_genfunc_indim(out, width, depth, height, stock);
+		if(ret != 0) {
+			fprintf(stderr, "Error while generating output: %s\n",
+			    strerror(ret));
+			err = -1;
+			goto end_label;
+		}
+	}
+
+	btofilep(stdout, out);
 
 
 end_label:
