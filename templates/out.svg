@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+	width="24in" height="48in">
+
+	<rect x="0in"
+              y="1in"
+              width="5in"
+              height="2.6560000000000001in"
+	      fill="#f0f0f0" stroke="black" />
+	<text x="0.5in"
+	      y="1in"
+	      font-size="0.25in"
+              fill="black"
+              stroke="black">Front</text>
+
+	<rect x="0in"
+              y="5in"
+              width="5in"
+              height="2.6560000000000001in"
+	      fill="#f0f0f0" stroke="black" />
+	<text x="0.5in"
+	      y="5in"
+	      font-size="0.25in"
+              fill="black"
+              stroke="black">Back</text>
+
+	<rect x="0in"
+              y="9in"
+              width="2in"
+              height="2.6560000000000001in"
+	      fill="#f0f0f0" stroke="black" />
+	<text x="0.5in"
+	      y="9in"
+	      font-size="0.25in"
+              fill="black"
+              stroke="black">Side</text>
+
+	<rect x="0in"
+              y="13in"
+              width="2in"
+              height="2.6560000000000001in"
+	      fill="#f0f0f0" stroke="black" />
+	<text x="0.5in"
+	      y="13in"
+	      font-size="0.25in"
+              fill="black"
+              stroke="black">Side</text>
+
+	<rect x="0in"
+              y="17in"
+              width="4.3120000000000003in"
+              height="1.3120000000000001in"
+	      fill="#f0f0f0" stroke="black" />
+	<text x="0.5in"
+	      y="17in"
+	      font-size="0.25in"
+              fill="black"
+              stroke="black">Bottom</text>
+
+</svg>
